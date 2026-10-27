@@ -1,0 +1,9 @@
+@import './Global.css';
+
+.box-modal {
+    background-color: var(--background-color) !important;
+}
+
+.modal-title {
+    color: var(--modal-title-color) !important;
+}

@@ -1,0 +1,173 @@
+@import './Global.css';
+
+/* Filas del DataGrid con colores alternados */
+.MuiDataGrid-row:nth-of-type(odd) {
+    background-color: var(--child-row);
+}
+
+.MuiDataGrid-row:nth-of-type(even) {
+    background-color: white;
+}
+
+[data-toolpad-color-scheme="dark"] .MuiDataGrid-row:nth-of-type(even) {
+    background-color: #262c35;
+}
+
+/* Efecto visual al pasar el cursor sobre una fila */
+.MuiDataGrid-row:hover {
+    background-color: var(--row-hover) !important;
+}
+
+/* Configuración general de las celdas del DataGrid */
+.MuiDataGrid-root .MuiDataGrid-cell {
+    text-align: center !important;
+    font-family: "DM Sans", sans-serif !important;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* Estilos generales de los encabezados del DataGrid */
+.MuiDataGrid-columnHeader {
+    background-color: var(--table-header-footer2) !important;
+    color: rgb(0, 0, 0);
+    font-size: 1rem;
+    text-align: center !important;
+    font-family: "DM Sans", sans-serif !important;
+    font-weight: 600 !important;
+}
+
+/* Alineación del contenido dentro de los encabezados */
+.MuiDataGrid-columnHeaderTitleContainer {
+    justify-content: center !important;
+}
+
+/* Elimina el borde lateral del último encabezado */
+.MuiDataGrid-columnHeader:last-of-type {
+    border-right: none !important;
+}
+
+/* Contenedor principal del DataGrid */
+.data-grid-container {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    overflow-x: auto;
+}
+
+/* Contenedor externo de la tabla */
+.data-table-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    height: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Superficie visual que contiene la tabla */
+.data-table {
+    width: 100%;
+    height: auto;
+    overflow: auto;
+    padding: 10px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+/* Espaciado entre los elementos de la barra de herramientas */
+.MuiDataGrid-root .MuiDataGrid-toolbarContainer {
+    gap: 20px;
+}
+
+/* Optimización visual del texto dentro del DataGrid */
+.MuiDataGrid-root {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+}
+
+/* Tipografía general de los componentes de Material UI */
+.MuiToolbar-root,
+.MuiTypography-h6,
+.MuiListItemText-primary,
+.MuiTypography-root,
+.MuiTypography-body1 {
+    font-family: "Montserrat", sans-serif !important;
+}
+
+/* Estilos visuales de la barra principal */
+.MuiToolbar-gutters,
+.MuiToolbar-regular {
+    background-color: var(--header-color) !important;
+    color: white !important;
+    font-family: "Montserrat", sans-serif !important;
+}
+
+/* Color del texto principal de la barra de herramientas */
+.MuiToolbar-root {
+    color: var(--header-text) !important;
+}
+
+/* Estilos del área de paginación de las tablas */
+.MuiTablePagination-toolbar {
+    background-color: var(--table-header-footer2) !important;
+    color: rgb(0, 0, 0) !important;
+}
+
+.MuiTablePagination-displayedRows,
+.MuiTablePaginationActions-root .MuiSvgIcon-root {
+    color: var(--legend) !important;
+}
+
+/* Estilos generales de iconos interactivos */
+.MuiIconButton-root {
+    color: var(--buttons) !important;
+}
+
+/* Configuración visual de los botones */
+.MuiButton-root {
+    color: var(--button-text-color) !important;
+    font-family: "Montserrat", sans-serif !important;
+}
+
+.MuiButtonBase-root-MuiButton-root {
+    color: var(--primary-color) !important;
+    font-family: "Montserrat", sans-serif !important;
+}
+
+/* Apariencia de los elementos seleccionados en listas */
+.MuiListItemButton-root.Mui-selected {
+    background-color: var(--selected-color) !important;
+    color: white !important;
+}
+
+.MuiListItemButton-root.Mui-selected svg {
+    color: var(--primary-color) !important;
+}
+
+.MuiListItemButton-root.Mui-selected .MuiTypography-root {
+    color: var(--option-selected-text-color) !important;
+    font-family: "Montserrat", sans-serif !important;
+}
+
+/* Fondo de contenedores principales de Material UI */
+.MuiBox-root .css-7jy391,
+.MuiBox-root .css-ott4bn {
+    background: var(--bg-main) !important;
+    margin: 0;
+}
+
+/* Tamaño y legibilidad del contenido en campos de texto */
+.MuiTextField-root {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.MuiTextField-root input {
+    font-size: 14px;
+}
+

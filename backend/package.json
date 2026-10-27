@@ -1,0 +1,26 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Backend to manage routes to get, post and update computer inventory",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "express-ntlm": "^2.7.0",
+    "jsonwebtoken": "^9.0.2",
+    "mssql": "^11.0.1",
+    "multer": "^2.0.2",
+    "net": "^1.0.2",
+    "nodemon": "^3.1.10"
+  }
+}

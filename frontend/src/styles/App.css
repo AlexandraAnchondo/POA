@@ -1,0 +1,18 @@
+.sidebar-custom-logo {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* nav {
+    width: 250px;
+}
+
+.MuiDrawer-paper {
+    width: 250px !important; 
+}
+
+.MuiDrawer-docked {
+    width: 250px !important;
+} */

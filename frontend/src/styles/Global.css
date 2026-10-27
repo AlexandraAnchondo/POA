@@ -1,0 +1,189 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+
+/* Variables globales del tema claro */
+:root {
+    /* Tabla */
+    --child-row: #d4d4d4;
+    --row-hover: #c4cfd4;
+    --row-color: #ebebeb;
+    --table-header-footer: #ffffff;
+    --table-header-footer2: #7198aa;
+    --table-text: #000;
+
+    /* Fondos */
+    --background-color: #ffffff;
+    --bg-main: #eaeaea;
+
+    /* Bordes */
+    --border-color: #ddd;
+    --avatar-border: #e6e6e6;
+
+    /* Secciones */
+    --section-color: #f7f7f7;
+    --section-color-disabled: #dfdfdf;
+    --data-section: #ffffff;
+
+    /* Modales */
+    --modal-title-color: #3b6a96;
+
+    /* Botones */
+    --buttons: #81afca;
+    --buttons-hover: #6491aa;
+    --button-text-color: black;
+    --button-text-color2: white;
+    --button-view-more: #29577c;
+    --button-registrar: #2e2e2e;
+    --button-lista: #c2a9cc;
+    --button-lista-hover: rgb(152, 125, 163);
+    --button-cancelar: #e97575;
+    --button-success: #88c589;
+    --button-success-hover: #6b9c69;
+
+    /* Texto */
+    --primary-color: #3a678b;
+    --selected-color: #e9e9e9;
+    --text-color: #333;
+    --option-selected-text-color: #004872;
+    --text-headers: #2f313e;
+    --legend: #004872;
+    --time: #004872;
+    --header-text: #575757;
+
+    /* Encabezado */
+    --header-color: #ffffff;
+}
+
+/* Variables utilizadas en el tema oscuro */
+[data-toolpad-color-scheme="dark"] {
+    /* Tabla */
+    --child-row: #333842;
+    --row-hover: #504226;
+    --row-color: #6fa1db67;
+    --table-header-footer: #2e2e2e57;
+    --table-header-footer2: #29547c;
+    --table-text: #fff;
+
+    /* Fondos */
+    --background-color: #242424;
+    --bg-main: #000000;
+
+    /* Bordes */
+    --border-color: #ddd;
+    --avatar-border: #c5e0ff;
+
+    /* Secciones */
+    --section-color: #2e2e2e57;
+    --section-color-disabled: #6e6e6e;
+    --data-section: #2e2e2e57;
+
+    /* Modales */
+    --modal-title-color: #29577c;
+
+    /* Botones */
+    --buttons: #81afca;
+    --buttons-hover: #81afca;
+    --button-text-color: #ffff;
+    --button-text-color2: black;
+    --button-view-more: #344f69;
+    --button-registrar: #000000;
+    --button-lista: #9162a3;
+
+    /* Texto */
+    --primary-color: #3a678b;
+    --selected-color: #363636;
+    --text-color: #333;
+    --option-selected-text-color: #7bb5d6;
+    --text-headers: #ffffff;
+    --legend: #004872;
+    --time: #004872;
+    --header-text: #ffffff;
+
+    /* Encabezado */
+    --header-color: #0e0e0e;
+}
+
+/* Tipografía general de los componentes principales */
+.MuiToolbar-root,
+.MuiTypography-h6,
+.MuiTypography-root,
+.MuiTypography-body1,
+.MuiListItemText-primary {
+    font-family: "Montserrat", sans-serif !important;
+}
+
+/* Texto principal de la barra de herramientas */
+.MuiToolbar-root,
+.MuiTypography-h6 {
+    color: var(--header-text) !important;
+}
+
+/* Apariencia general de la barra de herramientas */
+.MuiToolbar-gutters,
+.MuiToolbar-regular {
+    background-color: var(--header-color) !important;
+    color: white !important;
+    font-family: "Montserrat", sans-serif !important;
+}
+
+/* Estilos del contenedor de paginación */
+.MuiTablePagination-toolbar {
+    background-color: var(--table-header-footer2) !important;
+    color: rgb(0, 0, 0) !important;
+}
+
+/* Color general de los botones con iconos */
+.MuiIconButton-root {
+    color: var(--buttons) !important;
+}
+
+/* Estilos generales de los botones */
+.MuiButton-root {
+    color: var(--button-text-color) !important;
+    font-family: "Montserrat", sans-serif !important;
+}
+
+/* Estilos específicos para botones basados en ButtonBase */
+.MuiButtonBase-root-MuiButton-root {
+    color: var(--primary-color) !important;
+    font-family: "Montserrat", sans-serif !important;
+}
+
+/* Apariencia de los elementos seleccionados en listas */
+.MuiListItemButton-root.Mui-selected {
+    background-color: var(--selected-color) !important;
+    color: white !important;
+}
+
+/* Color de los iconos dentro de elementos seleccionados */
+.MuiListItemButton-root.Mui-selected svg {
+    color: var(--primary-color) !important;
+}
+
+/* Tipografía y color del texto en elementos seleccionados */
+.MuiListItemButton-root.Mui-selected .MuiTypography-root {
+    color: var(--option-selected-text-color) !important;
+    font-family: "Montserrat", sans-serif !important;
+}
+
+/* Información y controles de la paginación */
+.MuiTablePagination-displayedRows,
+.MuiTablePaginationActions-root .MuiSvgIcon-root {
+    color: var(--legend) !important;
+}
+
+/* Fondo de contenedores principales personalizados */
+.MuiBox-root .css-7jy391,
+.MuiBox-root .css-ott4bn {
+    background: var(--bg-main) !important;
+    margin: 0;
+}
+
+/* Ajustes de tamaño y legibilidad en campos de texto */
+.MuiTextField-root {
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.MuiTextField-root input {
+    font-size: 14px;
+}
