@@ -16,6 +16,8 @@ export default function LogoutButton() {
         localStorage.removeItem("token");
         localStorage.setItem("isLoggedIn", "false");
         localStorage.removeItem("usuario");
+        localStorage.removeItem("id_usuario");
+        localStorage.removeItem("tieneUnidadResponsable");
 
         setOpenConfirm(false);
         setTimeout(() => {

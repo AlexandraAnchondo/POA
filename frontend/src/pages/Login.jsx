@@ -35,8 +35,12 @@ const Login = () => {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("usuario", usuario);
       localStorage.setItem("id_usuario", data.userId);
+      localStorage.setItem(
+        "tieneUnidadResponsable",
+        String(data.unidadesResponsables?.length > 0)
+      );
 
-      window.location.href = "/template/inicio";
+      window.location.href = "/poa/inicio";
     } catch (err) {
       setError(err.error);
     }
@@ -71,7 +75,7 @@ const Login = () => {
         />
 
         <Typography variant="h5" fontWeight="bold">
-          Template Toolpad React
+          POA
         </Typography>
 
         <Typography variant="h6" color="text.secondary" mb={3} mt={1}>

@@ -18,7 +18,7 @@ const handleApiError = (err) => {
     if (err.response && err.response.status === 401) {
         localStorage.removeItem("token");
         localStorage.setItem("isLoggedIn", "false");
-        window.location.href = "/template/login";
+        window.location.href = "/poa/login";
     }
     throw err;
 };
@@ -30,6 +30,17 @@ export const login = async (usuario, contraseña) => {
         return response.data;
     } catch (err) {
         throw err.response?.data || { error: "Error de red" };
+    }
+};
+
+export const obtenerAvanceUnidad = async () => {
+    try {
+        const response = await api.get("/avance-unidad", {
+            headers: getAuthHeaders(),
+        });
+        return response.data;
+    } catch (err) {
+        handleApiError(err);
     }
 };
 

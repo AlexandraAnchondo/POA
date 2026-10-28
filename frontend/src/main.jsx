@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom'
 import App from './App';
 import Layout from './layouts/dashboard';
 import Inicio from './pages/Inicio';
+import Avance from './pages/Avance';
 import Login from './pages/Login';
 
 function PrivateRoute({ children }) {
@@ -38,13 +39,21 @@ const router = createBrowserRouter(
                 </PrivateRoute>
               )
             },
+            {
+              path: "avance",
+              element: (
+                <PrivateRoute>
+                  <Avance />
+                </PrivateRoute>
+              )
+            },
           ],
         },
       ],
     }
   ],
   {
-    basename: '/template',
+    basename: '/poa',
   }
 );
 
