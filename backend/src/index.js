@@ -129,7 +129,11 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
                 Base AS (
                     SELECT
                         p.NombrePrograma,
+                        p.FinNarrativo,
+                        p.PropositoNarrativo,
+                        m.IdMeta,
                         m.NumeroMeta,
+                        m.DescripcionMeta,
                         a.IdAccion,
                         a.NumeroAccion,
                         a.DescripcionAccion,
@@ -166,14 +170,16 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
                 ),
                 Renglones AS (
                     SELECT
-                        NombrePrograma, NumeroMeta, IdAccion, NumeroAccion,
+                        NombrePrograma, FinNarrativo, PropositoNarrativo,
+                        IdMeta, NumeroMeta, DescripcionMeta, IdAccion, NumeroAccion,
                         DescripcionAccion, UnidadMedida, UnidadEjecutora,
                         CantidadAnualProgramada, 1 AS Orden, 'PROGRAMADO' AS Concepto,
                         MesFin, CantidadProgramada AS Cantidad
                     FROM Base
                     UNION ALL
                     SELECT
-                        NombrePrograma, NumeroMeta, IdAccion, NumeroAccion,
+                        NombrePrograma, FinNarrativo, PropositoNarrativo,
+                        IdMeta, NumeroMeta, DescripcionMeta, IdAccion, NumeroAccion,
                         DescripcionAccion, UnidadMedida, UnidadEjecutora,
                         CantidadAnualProgramada, 2, 'REALIZADO',
                         MesFin, CantidadRealizada
@@ -182,7 +188,11 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
                 SELECT
                     IdAccion,
                     NombrePrograma,
+                    FinNarrativo,
+                    PropositoNarrativo,
+                    IdMeta,
                     NumeroMeta,
+                    DescripcionMeta,
                     NumeroAccion,
                     DescripcionAccion,
                     UnidadMedida,
@@ -204,7 +214,8 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
                     SUM(Cantidad) AS TOTAL
                 FROM Renglones
                 GROUP BY
-                    NombrePrograma, NumeroMeta, IdAccion, NumeroAccion,
+                    NombrePrograma, FinNarrativo, PropositoNarrativo,
+                    IdMeta, NumeroMeta, DescripcionMeta, IdAccion, NumeroAccion,
                     DescripcionAccion, UnidadMedida, UnidadEjecutora,
                     CantidadAnualProgramada, Orden, Concepto
                 ORDER BY NombrePrograma, NumeroMeta, NumeroAccion, Orden
