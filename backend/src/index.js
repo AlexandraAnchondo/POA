@@ -98,6 +98,19 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
     try {
         const idEjercicio = 1;
         const pool = await getConnection();
+        const accesoGlobalResult = await pool.request()
+            .input('idUsuario', sql.Int, req.user.idUsuario)
+            .query(`
+                SELECT CASE WHEN EXISTS (
+                    SELECT 1
+                    FROM UnidadResponsableEmpleado
+                    WHERE IdEmpleado = @idUsuario
+                      AND IdUnidadResponsable = 1
+                      AND Activo = 1
+                ) THEN 1 ELSE 0 END AS PuedeVerTodas
+            `);
+        const puedeVerTodasUnidades = accesoGlobalResult.recordset[0]?.PuedeVerTodas === 1;
+
         const anioResult = await pool.request()
             .input('idEjercicio', sql.Int, idEjercicio)
             .query(`
@@ -105,9 +118,15 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
                 FROM EjercicioFiscal
                 WHERE IdEjercicio = @idEjercicio
             `);
-        const unidadesResult = await pool.request()
-            .input('idUsuario', sql.Int, req.user.idUsuario)
-            .query(`
+        const unidadesRequest = pool.request()
+            .input('idUsuario', sql.Int, req.user.idUsuario);
+        const unidadesResult = puedeVerTodasUnidades
+            ? await unidadesRequest.query(`
+                SELECT IdUnidadResponsable, NombreUnidad
+                FROM UnidadResponsable
+                ORDER BY NombreUnidad
+            `)
+            : await unidadesRequest.query(`
                 SELECT DISTINCT ur.IdUnidadResponsable, ur.NombreUnidad
                 FROM UnidadResponsableEmpleado ure
                 JOIN UnidadResponsable ur
@@ -119,6 +138,7 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
 
         const result = await pool.request()
             .input('idUsuario', sql.Int, req.user.idUsuario)
+            .input('puedeVerTodas', sql.Bit, puedeVerTodasUnidades)
             .input('idEjercicio', sql.Int, idEjercicio)
             .query(`
                 WITH Avance AS (
@@ -128,6 +148,7 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
                 ),
                 Base AS (
                     SELECT
+                        p.IdPrograma,
                         p.NombrePrograma,
                         p.FinNarrativo,
                         p.PropositoNarrativo,
@@ -138,6 +159,7 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
                         a.NumeroAccion,
                         a.DescripcionAccion,
                         um.Nombre AS UnidadMedida,
+                        ur.IdUnidadResponsable,
                         ur.NombreUnidad AS UnidadEjecutora,
                         a.CantidadAnualProgramada,
                         t.MesFin,
@@ -160,33 +182,37 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
                         ON av.IdAccion = a.IdAccion
                        AND av.IdTrimestre = pt.IdTrimestre
                     WHERE p.IdEjercicio = @idEjercicio
-                      AND EXISTS (
-                          SELECT 1
-                          FROM UnidadResponsableEmpleado ure
-                          WHERE ure.IdEmpleado = @idUsuario
-                            AND ure.IdUnidadResponsable = a.IdUnidadResponsable
-                            AND ure.Activo = 1
+                      AND (
+                          @puedeVerTodas = 1
+                          OR EXISTS (
+                              SELECT 1
+                              FROM UnidadResponsableEmpleado ure
+                              WHERE ure.IdEmpleado = @idUsuario
+                                AND ure.IdUnidadResponsable = a.IdUnidadResponsable
+                                AND ure.Activo = 1
+                          )
                       )
                 ),
                 Renglones AS (
                     SELECT
-                        NombrePrograma, FinNarrativo, PropositoNarrativo,
+                        IdPrograma, NombrePrograma, FinNarrativo, PropositoNarrativo,
                         IdMeta, NumeroMeta, DescripcionMeta, IdAccion, NumeroAccion,
-                        DescripcionAccion, UnidadMedida, UnidadEjecutora,
+                        DescripcionAccion, UnidadMedida, IdUnidadResponsable, UnidadEjecutora,
                         CantidadAnualProgramada, 1 AS Orden, 'PROGRAMADO' AS Concepto,
                         MesFin, CantidadProgramada AS Cantidad
                     FROM Base
                     UNION ALL
                     SELECT
-                        NombrePrograma, FinNarrativo, PropositoNarrativo,
+                        IdPrograma, NombrePrograma, FinNarrativo, PropositoNarrativo,
                         IdMeta, NumeroMeta, DescripcionMeta, IdAccion, NumeroAccion,
-                        DescripcionAccion, UnidadMedida, UnidadEjecutora,
+                        DescripcionAccion, UnidadMedida, IdUnidadResponsable, UnidadEjecutora,
                         CantidadAnualProgramada, 2, 'REALIZADO',
                         MesFin, CantidadRealizada
                     FROM Base
                 )
                 SELECT
                     IdAccion,
+                    IdPrograma,
                     NombrePrograma,
                     FinNarrativo,
                     PropositoNarrativo,
@@ -196,6 +222,7 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
                     NumeroAccion,
                     DescripcionAccion,
                     UnidadMedida,
+                    IdUnidadResponsable,
                     UnidadEjecutora,
                     Concepto,
                     CantidadAnualProgramada AS Anual,
@@ -214,16 +241,17 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
                     SUM(Cantidad) AS TOTAL
                 FROM Renglones
                 GROUP BY
-                    NombrePrograma, FinNarrativo, PropositoNarrativo,
+                    IdPrograma, NombrePrograma, FinNarrativo, PropositoNarrativo,
                     IdMeta, NumeroMeta, DescripcionMeta, IdAccion, NumeroAccion,
-                    DescripcionAccion, UnidadMedida, UnidadEjecutora,
+                    DescripcionAccion, UnidadMedida, IdUnidadResponsable, UnidadEjecutora,
                     CantidadAnualProgramada, Orden, Concepto
-                ORDER BY NombrePrograma, NumeroMeta, NumeroAccion, Orden
+                ORDER BY IdPrograma, NumeroMeta, NumeroAccion, Orden
             `);
 
         res.json({
             ejercicio: anioResult.recordset[0]?.Anio ?? idEjercicio,
             unidades: unidadesResult.recordset,
+            puedeVerTodasUnidades,
             rows: result.recordset,
         });
     } catch (err) {

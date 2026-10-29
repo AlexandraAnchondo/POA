@@ -17,6 +17,7 @@
     "@react-pdf/renderer": "^4.3.0",
     "@toolpad/core": "0.16.0",
     "axios": "^1.10.0",
+    "fflate": "^0.8.3",
     "framer-motion": "^12.23.26",
     "html5-qrcode": "^2.3.8",
     "qrcode.react": "^4.2.0",
