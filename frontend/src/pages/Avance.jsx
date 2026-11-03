@@ -20,6 +20,8 @@ import {
     Typography,
 } from "@mui/material";
 import DownloadIcon from "@mui/icons-material/Download";
+import PDFIcon from "@mui/icons-material/PictureAsPdf";
+import { Document, Page, StyleSheet, Text, View, pdf } from "@react-pdf/renderer";
 import { strToU8, zipSync } from "fflate";
 import { obtenerAvanceUnidad } from "../data/API";
 
@@ -90,6 +92,268 @@ function agruparProgramas(rows) {
             acciones: [...meta.acciones.values()],
         })),
     }));
+}
+
+const estilosPDF = StyleSheet.create({
+    pagina: {
+        paddingTop: 36,
+        paddingBottom: 36,
+        paddingHorizontal: 42,
+        fontFamily: "Helvetica",
+        fontSize: 7,
+        color: "#000000",
+    },
+    encabezado: {
+        textAlign: "center",
+        marginBottom: 20,
+    },
+    titulo: {
+        fontSize: 11,
+        fontWeight: "bold",
+        marginBottom: 6,
+    },
+    subtitulo: {
+        fontSize: 9,
+        marginBottom: 8,
+    },
+    unidad: {
+        fontSize: 8,
+    },
+    programa: {
+        flexDirection: "row",
+        marginBottom: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: "#000000",
+        paddingBottom: 7,
+    },
+    etiquetaPrograma: {
+        width: 72,
+        paddingVertical: 5,
+        paddingRight: 8,
+        fontWeight: "bold",
+    },
+    nombrePrograma: {
+        flex: 1,
+        fontWeight: "bold",
+        fontSize: 8,
+        paddingVertical: 5,
+        paddingHorizontal: 7,
+        backgroundColor: "#d9d9d9",
+    },
+    fila: {
+        flexDirection: "row",
+    },
+    celda: {
+        borderWidth: 0.5,
+        borderColor: "#000000",
+        paddingVertical: 5,
+        paddingHorizontal: 4,
+        lineHeight: 1.25,
+    },
+    etiqueta: {
+        width: 90,
+        fontWeight: "bold",
+        backgroundColor: "#d9d9d9",
+    },
+    resumen: {
+        flex: 1,
+    },
+    meta: {
+        marginTop: 16,
+        marginBottom: 9,
+        paddingVertical: 8,
+        paddingHorizontal: 7,
+        backgroundColor: "#800000",
+        color: "#ffffff",
+        fontWeight: "bold",
+        fontSize: 8,
+        lineHeight: 1.3,
+    },
+    accion: {
+        marginTop: 10,
+        marginBottom: 5,
+        paddingVertical: 7,
+        paddingHorizontal: 7,
+        backgroundColor: "#d6b894",
+        fontWeight: "bold",
+        fontSize: 7.5,
+        lineHeight: 1.3,
+    },
+    detalle: {
+        flexDirection: "row",
+        marginBottom: 7,
+    },
+    detalleCelda: {
+        flex: 1,
+        borderWidth: 0.5,
+        borderColor: "#000000",
+        paddingVertical: 5,
+        paddingHorizontal: 4,
+        lineHeight: 1.25,
+    },
+    detalleEtiqueta: {
+        fontWeight: "bold",
+        backgroundColor: "#d9d9d9",
+    },
+    concepto: {
+        width: "19%",
+    },
+    cantidad: {
+        textAlign: "right",
+    },
+    encabezadoTabla: {
+        backgroundColor: "#d9d9d9",
+        fontWeight: "bold",
+        textAlign: "center",
+    },
+    mes: {
+        width: "5.5%",
+        flexGrow: 0,
+    },
+    anual: {
+        width: "8%",
+        flexGrow: 0,
+    },
+    total: {
+        width: "7%",
+        flexGrow: 0,
+    },
+});
+
+function ReporteAvancePDF({ programas, ejercicio, nombreUnidad }) {
+    return (
+        <Document>
+            {programas.map((programa) => (
+                <Page key={programa.id} size="A3" orientation="landscape" style={estilosPDF.pagina}>
+                    <View style={estilosPDF.encabezado}>
+                        <Text style={estilosPDF.titulo}>
+                            PODER LEGISLATIVO DEL ESTADO DE BAJA CALIFORNIA
+                        </Text>
+                        <Text style={estilosPDF.subtitulo}>
+                            PROGRAMA OPERATIVO ANUAL PARA EL EJERCICIO FISCAL {ejercicio || 2026}
+                        </Text>
+                        <Text style={estilosPDF.unidad}>UNIDAD RESPONSABLE: {nombreUnidad}</Text>
+                    </View>
+
+                    <View style={estilosPDF.programa}>
+                        <Text style={estilosPDF.etiquetaPrograma}>PROGRAMA:</Text>
+                        <Text style={estilosPDF.nombrePrograma}>{programa.nombre}</Text>
+                    </View>
+
+                    <View style={[estilosPDF.fila, { marginTop: 4 }]}>
+                        <Text style={[estilosPDF.celda, estilosPDF.etiqueta, estilosPDF.encabezadoTabla]}>ELEMENTO</Text>
+                        <Text style={[estilosPDF.celda, estilosPDF.resumen, estilosPDF.encabezadoTabla]}>
+                            RESUMEN NARRATIVO
+                        </Text>
+                    </View>
+                    <View style={estilosPDF.fila}>
+                        <Text style={[estilosPDF.celda, estilosPDF.etiqueta]}>FIN</Text>
+                        <Text style={[estilosPDF.celda, estilosPDF.resumen]}>
+                            {programa.fin || "Sin resumen narrativo"}
+                        </Text>
+                    </View>
+                    <View style={estilosPDF.fila}>
+                        <Text style={[estilosPDF.celda, estilosPDF.etiqueta]}>PROPÓSITO</Text>
+                        <Text style={[estilosPDF.celda, estilosPDF.resumen]}>
+                            {programa.proposito || "Sin resumen narrativo"}
+                        </Text>
+                    </View>
+
+                    {programa.metas.map((meta) => (
+                        <View key={meta.id}>
+                            <Text style={estilosPDF.meta}>
+                                META {meta.numero}: {meta.descripcion}
+                            </Text>
+                            {meta.acciones.map((accion) => (
+                                <View key={accion.id} wrap={false}>
+                                    <Text style={estilosPDF.accion}>
+                                        ACCIÓN {accion.numero}: {accion.descripcion}
+                                    </Text>
+                                    <View style={estilosPDF.detalle}>
+                                        <Text style={[estilosPDF.detalleCelda, estilosPDF.detalleEtiqueta]}>
+                                            UNIDAD DE MEDIDA
+                                        </Text>
+                                        <Text style={estilosPDF.detalleCelda}>
+                                            {accion.unidadMedida || "—"}
+                                        </Text>
+                                        <Text style={[estilosPDF.detalleCelda, estilosPDF.detalleEtiqueta]}>
+                                            UNIDAD EJECUTORA
+                                        </Text>
+                                        <Text style={estilosPDF.detalleCelda}>
+                                            {accion.unidadEjecutora || nombreUnidad || "—"}
+                                        </Text>
+                                    </View>
+                                    <View style={estilosPDF.fila}>
+                                        {[
+                                            { label: "Concepto", style: estilosPDF.concepto },
+                                            { label: "Anual", style: estilosPDF.anual },
+                                            ...meses.map(([, nombre]) => ({ label: nombre, style: estilosPDF.mes })),
+                                            { label: "Total", style: estilosPDF.total },
+                                        ].map(({ label, style }) => (
+                                            <Text
+                                                key={label}
+                                                style={[estilosPDF.celda, style, estilosPDF.encabezadoTabla]}
+                                            >
+                                                {label}
+                                            </Text>
+                                        ))}
+                                    </View>
+                                    {accion.renglones.map((row) => (
+                                        <View
+                                            key={`${row.IdAccion}-${row.Concepto}`}
+                                            style={estilosPDF.fila}
+                                        >
+                                            <Text style={[estilosPDF.celda, estilosPDF.concepto]}>
+                                                {row.Concepto === "PROGRAMADO" ? "PROGRAMADO" : "REALIZADO"}
+                                            </Text>
+                                            <Text style={[estilosPDF.celda, estilosPDF.anual, estilosPDF.cantidad]}>
+                                                {formatearCantidad(row.Anual)}
+                                            </Text>
+                                            {meses.map(([mes]) => (
+                                                <Text
+                                                    key={mes}
+                                                    style={[estilosPDF.celda, estilosPDF.mes, estilosPDF.cantidad]}
+                                                >
+                                                    {formatearCantidad(row[mes])}
+                                                </Text>
+                                            ))}
+                                            <Text style={[estilosPDF.celda, estilosPDF.total, estilosPDF.cantidad]}>
+                                                {formatearCantidad(row.TOTAL)}
+                                            </Text>
+                                        </View>
+                                    ))}
+                                </View>
+                            ))}
+                        </View>
+                    ))}
+                </Page>
+            ))}
+        </Document>
+    );
+}
+
+async function descargarReportePDF(rows, ejercicio, nombreUnidad) {
+    const programas = agruparProgramas(rows);
+    if (programas.length === 0) {
+        throw new Error("No hay información para generar el reporte.");
+    }
+
+    const blob = await pdf(
+        <ReporteAvancePDF
+            programas={programas}
+            ejercicio={ejercicio}
+            nombreUnidad={nombreUnidad}
+        />
+    ).toBlob();
+    const url = URL.createObjectURL(blob);
+    const enlace = document.createElement("a");
+    const nombreSeguro = (nombreUnidad || "unidad")
+        .replace(/[\\/:*?"<>|]/g, " ")
+        .trim();
+    enlace.href = url;
+    enlace.download = `POA ${ejercicio || 2026} ${nombreSeguro}.pdf`;
+    enlace.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
 function nombreHojaDisponible(nombre, nombresUsados) {
@@ -503,7 +767,7 @@ ${relacionesHojasXml}
     const url = URL.createObjectURL(archivo);
     const enlace = document.createElement("a");
     enlace.href = url;
-    enlace.download = `Avance_POA_todas_las_unidades_${ejercicio}.xlsx`;
+    enlace.download = `POA ${ejercicio} CONGRESO BC.xlsx`;
     document.body.appendChild(enlace);
     enlace.click();
     enlace.remove();
@@ -602,6 +866,8 @@ export default function Avance() {
     const programas = agruparProgramas(rowsVisibles);
 
     const exportarTodasLasUnidades = async () => {
+        if (!data?.puedeVerTodasUnidades || unidadSeleccionada !== "todas") return;
+
         setExportError("");
         setExportando(true);
         try {
@@ -609,6 +875,25 @@ export default function Avance() {
         } catch (err) {
             console.error("Error al generar el reporte de avance en Excel:", err);
             setExportError("No fue posible generar el archivo de Excel.");
+        } finally {
+            setExportando(false);
+        }
+    };
+
+    const nombreUnidadPDF = data?.puedeVerTodasUnidades
+        ? nombreUnidadSeleccionada
+        : rowsVisibles[0]?.UnidadEjecutora ?? unidades[0]?.NombreUnidad ?? "Unidad asignada";
+
+    const exportarUnidadPDF = async () => {
+        if (data?.puedeVerTodasUnidades && unidadSeleccionada === "todas") return;
+
+        setExportError("");
+        setExportando(true);
+        try {
+            await descargarReportePDF(rowsVisibles, data.ejercicio, nombreUnidadPDF);
+        } catch (err) {
+            console.error("Error al generar el reporte de avance en PDF:", err);
+            setExportError("No fue posible generar el archivo de PDF.");
         } finally {
             setExportando(false);
         }
@@ -655,13 +940,39 @@ export default function Avance() {
                                     ))}
                                 </Select>
                             </FormControl>
+                            {unidadSeleccionada === "todas" ? (
+                                <Button
+                                    variant="contained"
+                                    sx={{ color: "white !important", backgroundColor: "var(--primary-color)" }}
+                                    startIcon={exportando ? <CircularProgress size={18} color="inherit" /> : <DownloadIcon />}
+                                    onClick={exportarTodasLasUnidades}
+                                    disabled={exportando || rows.length === 0}
+                                >
+                                    {exportando ? "Generando Excel..." : "Descargar avance de todas las unidades"}
+                                </Button>
+                            ) : (
+                                <Button
+                                    variant="contained"
+                                    sx={{ color: "white !important", backgroundColor: "var(--primary-color)" }}
+                                    startIcon={exportando ? <CircularProgress size={18} color="inherit" /> : <PDFIcon />}
+                                    onClick={exportarUnidadPDF}
+                                    disabled={exportando || rowsVisibles.length === 0}
+                                >
+                                    {exportando ? "Generando PDF..." : "Descargar avance de la unidad"}
+                                </Button>
+                            )}
+                        </Box>
+                    )}
+                    {!data.puedeVerTodasUnidades && (
+                        <Box sx={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 2, mb: 3 }}>
                             <Button
                                 variant="contained"
-                                startIcon={exportando ? <CircularProgress size={18} color="inherit" /> : <DownloadIcon />}
-                                onClick={exportarTodasLasUnidades}
-                                disabled={exportando || rows.length === 0}
+                                sx={{ color: "white !important", backgroundColor: "var(--primary-color)" }}
+                                startIcon={exportando ? <CircularProgress size={18} color="inherit" /> : <PDFIcon />}
+                                onClick={exportarUnidadPDF}
+                                disabled={exportando || rowsVisibles.length === 0}
                             >
-                                {exportando ? "Generando Excel..." : "Descargar avance de todas las unidades"}
+                                {exportando ? "Generando PDF..." : "Descargar avance de mi unidad"}
                             </Button>
                         </Box>
                     )}
