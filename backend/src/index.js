@@ -11,7 +11,6 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: true, credentials: true }));
 
-const scannerRoutes = require('./routes/scanner.routes');
 const usuarioRoutes = require('./routes/usuarios.routes');
 
 // SQL
@@ -31,13 +30,7 @@ async function getConnection() {
     return pool;
 }
 
-// ARCHIVOS
-app.use('/archivos', express.static(path.join(__dirname, 'archivos')));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true, limit: '10mb' }));
-
 // RUTAS
-app.use(scannerRoutes);
 app.use(usuarioRoutes);
 
 // LOGIN
@@ -260,7 +253,7 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
     }
 });
 
-const port = process.env.PORT || 3003;
+const port = process.env.PORT || 3006;
 const host = process.env.HOST || '0.0.0.0'; // 0.0.0.0 escucha en todas las interfaces
 
 app.listen(port, host, () => {

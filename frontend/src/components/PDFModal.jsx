@@ -4,7 +4,7 @@ import { Box } from "@mui/material";
 import { motion } from "framer-motion";
 import '../styles/PDFModal.css';
 
-const API_URL = import.meta.env.VITE_API_URL_DEV;
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function PDFModal({ data, onClose }) {
     if (!data?.archivo) return null;
