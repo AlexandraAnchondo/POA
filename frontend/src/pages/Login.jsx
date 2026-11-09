@@ -35,6 +35,7 @@ const Login = () => {
       localStorage.setItem("isLoggedIn", "true");
       localStorage.setItem("usuario", data.usuario || usuario);
       localStorage.setItem("id_usuario", data.userId);
+      localStorage.setItem("permiso", data.permiso || "");
       localStorage.setItem(
         "tieneUnidadResponsable",
         String(data.unidadesResponsables?.length > 0)

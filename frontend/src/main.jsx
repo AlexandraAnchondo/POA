@@ -5,6 +5,7 @@ import App from './App';
 import Layout from './layouts/dashboard';
 import Inicio from './pages/Inicio';
 import Avance from './pages/Avance';
+import Formatos from './pages/Formatos';
 import Login from './pages/Login';
 
 function PrivateRoute({ children }) {
@@ -44,6 +45,14 @@ const router = createBrowserRouter(
               element: (
                 <PrivateRoute>
                   <Avance />
+                </PrivateRoute>
+              )
+            },
+            {
+              path: "formatos",
+              element: (
+                <PrivateRoute>
+                  <Formatos />
                 </PrivateRoute>
               )
             },

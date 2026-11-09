@@ -87,46 +87,46 @@ app.post('/login', async (req, res) => {
             .query('SELECT TOP (1) IDUSUARIO FROM dbo.CAT_USUARIO WHERE NOMBREUSUARIO = @usuario');
         let datosAlta = null;
 
+        let accesoResult;
+        try {
+            accesoResult = await pool.request()
+                .input('usuario', sql.VarChar(50), nombreUsuario)
+                .query(`
+                    SELECT DISTINCT TOP (2) Empleado, Permiso
+                    FROM [SIC_2026].[dbo].[Acceso]
+                    WHERE Usuario = @usuario
+                        AND Sistema = 31
+                        AND Empleado IS NOT NULL
+                `);
+        } catch (err) {
+            console.error('Error al verificar el acceso del usuario en SIC_2026:', err.message);
+            return res.status(503).json({
+                error: 'No fue posible verificar el acceso al sistema. Contacte al administrador.',
+            });
+        }
+
+        if (accesoResult.recordset.length === 0) {
+            return res.status(403).json({
+                error: 'Tu usuario no tiene acceso autorizado al sistema POA.',
+            });
+        }
+
+        if (accesoResult.recordset.length !== 1) {
+            console.error('El usuario tiene más de un número de empleado asociado en SIC_2026.');
+            return res.status(409).json({
+                error: 'No fue posible identificar de forma única tu registro de empleado. Contacte al administrador.',
+            });
+        }
+
+        const idEmpleadoSic = Number(accesoResult.recordset[0].Empleado);
+        if (!Number.isSafeInteger(idEmpleadoSic) || idEmpleadoSic <= 0) {
+            console.error('SIC_2026 devolvió un número de empleado inválido.');
+            return res.status(409).json({
+                error: 'No fue posible identificar tu registro de empleado. Contacte al administrador.',
+            });
+        }
+
         if (cuentaExistente.recordset.length === 0) {
-            let accesoResult;
-            try {
-                accesoResult = await pool.request()
-                    .input('usuario', sql.VarChar(50), nombreUsuario)
-                    .query(`
-                        SELECT DISTINCT TOP (2) Empleado
-                        FROM [SIC_2026].[dbo].[Acceso]
-                        WHERE Usuario = @usuario
-                          AND Sistema = 31
-                          AND Empleado IS NOT NULL
-                    `);
-            } catch (err) {
-                console.error('Error al verificar el acceso del usuario en SIC_2026:', err.message);
-                return res.status(503).json({
-                    error: 'No fue posible verificar el acceso al sistema. Contacte al administrador.',
-                });
-            }
-
-            if (accesoResult.recordset.length === 0) {
-                return res.status(403).json({
-                    error: 'Tu usuario no tiene acceso autorizado al sistema POA.',
-                });
-            }
-
-            if (accesoResult.recordset.length !== 1) {
-                console.error('El usuario tiene más de un número de empleado asociado en SIC_2026.');
-                return res.status(409).json({
-                    error: 'No fue posible identificar de forma única tu registro de empleado. Contacte al administrador.',
-                });
-            }
-
-            const idEmpleadoSic = Number(accesoResult.recordset[0].Empleado);
-            if (!Number.isSafeInteger(idEmpleadoSic) || idEmpleadoSic <= 0) {
-                console.error('SIC_2026 devolvió un número de empleado inválido.');
-                return res.status(409).json({
-                    error: 'No fue posible identificar tu registro de empleado. Contacte al administrador.',
-                });
-            }
-
             let empleadoResult;
             try {
                 empleadoResult = await pool.request()
@@ -323,9 +323,11 @@ app.post('/login', async (req, res) => {
                 ORDER BY ur.NombreUnidad
             `);
 
+        const permiso = String(accesoResult.recordset[0].Permiso ?? '').trim();
+
         // 🔐 Crear token con expiración
         const token = jwt.sign(
-            { idUsuario: user.IDUSUARIO, usuario: user.NOMBREUSUARIO },
+            { idUsuario: user.IDUSUARIO, usuario: user.NOMBREUSUARIO, permiso: permiso },
             process.env.JWT_SECRET || "secreto_super_seguro",
             { expiresIn: '4h' } // expira en 4 horas
         );
@@ -348,14 +350,19 @@ app.get('/avance-unidad', verificarToken, async (req, res) => {
         const pool = await getConnection();
         const accesoGlobalResult = await pool.request()
             .input('idUsuario', sql.Int, req.user.idUsuario)
+            .input('Permiso', sql.Int, req.user.permiso)
             .query(`
-                SELECT CASE WHEN EXISTS (
-                    SELECT 1
-                    FROM UnidadResponsableEmpleado
-                    WHERE IdEmpleado = @idUsuario
-                      AND IdUnidadResponsable = 1
-                      AND Activo = 1
-                ) THEN 1 ELSE 0 END AS PuedeVerTodas
+                SELECT CASE 
+                    WHEN @Permiso = 2 OR EXISTS (
+                        SELECT 1
+                        FROM UnidadResponsableEmpleado
+                        WHERE IdEmpleado = @idUsuario
+                        AND IdUnidadResponsable = 1
+                        AND Activo = 1
+                    )
+                    THEN 1 
+                    ELSE 0 
+                END AS PuedeVerTodas
             `);
         const puedeVerTodasUnidades = accesoGlobalResult.recordset[0]?.PuedeVerTodas === 1;
 

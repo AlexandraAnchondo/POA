@@ -1,0 +1,106 @@
+.formatos-container {
+    min-height: 100%;
+    padding: 28px 40px 40px;
+    background-color: var(--bg-main);
+}
+
+.formatos-heading {
+    margin-bottom: 28px;
+}
+
+.formatos-title {
+    margin-bottom: 8px !important;
+    color: var(--text-headers);
+    font-size: 2.2rem !important;
+    font-weight: 700 !important;
+}
+
+.formatos-subtitle {
+    color: var(--header-text);
+    opacity: 0.8;
+}
+
+.formatos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+    gap: 20px;
+    max-width: 1000px;
+}
+
+.formato-card {
+    border: 1px solid var(--border-color);
+    border-radius: 12px !important;
+    background-color: var(--background-color) !important;
+    transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.formato-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgb(0 0 0 / 10%);
+}
+
+.formato-card-content {
+    display: flex;
+    min-height: 250px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 24px !important;
+}
+
+.formato-icon {
+    display: grid;
+    width: 48px;
+    height: 48px;
+    margin-bottom: 18px;
+    place-items: center;
+    border-radius: 12px;
+    background-color: var(--section-color);
+    color: var(--primary-color);
+}
+
+.formato-icon svg {
+    font-size: 28px;
+}
+
+.formato-card-title {
+    color: var(--header-text);
+    font-size: 1.05rem !important;
+    font-weight: 600 !important;
+}
+
+.formato-chip {
+    background-color: var(--section-color) !important;
+    color: var(--primary-color) !important;
+    font-weight: 600 !important;
+}
+
+.formato-description {
+    flex-grow: 1;
+    margin-top: 12px !important;
+    color: var(--header-text);
+    opacity: 0.8;
+    line-height: 1.6 !important;
+}
+
+.formato-download {
+    margin-top: 24px !important;
+    padding: 9px 18px !important;
+    border-radius: 8px !important;
+    background-color: var(--button-view-more) !important;
+    color: white !important;
+    text-decoration: none;
+}
+
+.formato-download:hover {
+    background-color: var(--primary-color) !important;
+}
+
+@media (max-width: 600px) {
+    .formatos-container {
+        padding: 24px 20px 32px;
+    }
+
+    .formato-card-content {
+        min-height: 220px;
+    }
+}

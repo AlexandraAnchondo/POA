@@ -3,6 +3,7 @@ import { Outlet } from 'react-router';
 import { ReactRouterAppProvider } from '@toolpad/core/react-router';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import DescriptionIcon from '@mui/icons-material/Description';
 import logo from './assets/Avatar.png';
 import "./styles/App.css";
 
@@ -35,6 +36,12 @@ export default function App() {
           title: 'Inicio',
           icon: <DashboardIcon />,
           pattern: 'inicio',
+        },
+        {
+          segment: 'formatos',
+          title: 'Formatos',
+          icon: <DescriptionIcon />,
+          pattern: 'formatos',
         },
         ...(tieneUnidadResponsable ? [{
           segment: 'avance',
