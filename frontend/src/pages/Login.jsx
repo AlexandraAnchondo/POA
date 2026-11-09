@@ -33,7 +33,7 @@ const Login = () => {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("isLoggedIn", "true");
-      localStorage.setItem("usuario", usuario);
+      localStorage.setItem("usuario", data.usuario || usuario);
       localStorage.setItem("id_usuario", data.userId);
       localStorage.setItem(
         "tieneUnidadResponsable",
@@ -42,7 +42,7 @@ const Login = () => {
 
       window.location.href = "/poa/inicio";
     } catch (err) {
-      setError(err.error);
+      setError(err.error || "No fue posible iniciar sesión.");
     }
   };
 
@@ -85,15 +85,17 @@ const Login = () => {
         <form onSubmit={handleSubmit}>
           <TextField
             fullWidth
-            label="Usuario"
+            label="Usuario del dominio"
             variant="outlined"
             margin="normal"
+            autoComplete="username"
+            helperText="nombre.apellido"
             value={usuario}
             onChange={(e) => setUsuario(e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Person />
+                  <Person />CBC/
                 </InputAdornment>
               )
             }}
@@ -106,6 +108,7 @@ const Login = () => {
             type={showPassword ? "text" : "password"}
             variant="outlined"
             margin="normal"
+            autoComplete="current-password"
             value={contraseña}
             onChange={(e) => setContraseña(e.target.value)}
             InputProps={{
