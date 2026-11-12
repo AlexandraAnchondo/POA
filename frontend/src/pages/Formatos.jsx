@@ -11,9 +11,11 @@ import {
 import DownloadIcon from '@mui/icons-material/Download';
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined';
 import TableChartOutlinedIcon from '@mui/icons-material/TableChartOutlined';
+import PdfIcon from '@mui/icons-material/PictureAsPdf';
 
 import poaCongreso from '../assets/POA 2026 CONGRESO BC.xlsx?url';
 import formatoCumplimiento from '../assets/POA Formato cumplimiento.docx?url';
+import PresentacionPOA from '../assets/Presentación POA 2026 2027.pdf?url';
 import '../styles/Formatos.css';
 
 const formatos = [
@@ -33,6 +35,14 @@ const formatos = [
     href: formatoCumplimiento,
     Icon: InsertDriveFileOutlinedIcon,
   },
+  {
+    title: 'Presentación POA 2026-2027',
+    description: 'Presentación del Programa Operativo Anual 2026-2027.',
+    type: 'PDF',
+    fileName: 'Presentación POA 2026 2027.pdf',
+    href: PresentacionPOA,
+    Icon: PdfIcon,
+  }
 ];
 
 export default function Formatos() {
