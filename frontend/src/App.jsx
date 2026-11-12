@@ -37,18 +37,18 @@ export default function App() {
           icon: <DashboardIcon />,
           pattern: 'inicio',
         },
-        {
-          segment: 'formatos',
-          title: 'Formatos',
-          icon: <DescriptionIcon />,
-          pattern: 'formatos',
-        },
         ...(tieneUnidadResponsable ? [{
           segment: 'avance',
           title: 'Avance del POA',
           icon: <AssessmentIcon />,
           pattern: 'avance',
         }] : []),
+        {
+          segment: 'formatos',
+          title: 'Formatos',
+          icon: <DescriptionIcon />,
+          pattern: 'formatos',
+        },
       ];
 
   return (
